@@ -1,0 +1,127 @@
+<html>
+<head>
+    <title>YouCube - The Blog for Cube Puzzlers</title>
+    <script type="text/javascript">
+        // Blog Class
+        function Blog(date, body, img) {
+            // property
+            this.date = date;
+            this.body = body;
+            this.img = img;
+            
+            Blog.prototype.signiture = "Jeonghwan Kim";
+            
+            // 블로그 항목을 표현하는 문자열 반환
+            Blog.prototype.toString = function() {
+                return "[" + this.date + "]" + this.body;
+            }
+            
+            // 블로그 항목을 표현하는 서식화된 문자열 반환
+            Blog.prototype.toHTML = function(highlight) {
+                var html = "";
+                html += highlight ? "<p>" : "<p style='background-color:#EEEEEE;'>"; 
+                html += "<strong>" + this.date + "</strong><br />";
+                if (this.img) 
+                    html += "<img src='" + this.img + "' /><br />";
+                html += this.body + "<br /><em>" + this.signiture + "</em></p>";
+                return html;
+            }
+        }
+        
+        // toString Override
+        Date.prototype.toString = function() {
+            return this.getDate() + "/" + (this.getMonth() + 1) + "/" + this.getFullYear();
+        }
+        
+        // 블로그 항목에 대해 전역 배열 새성
+        var blog = [ new Blog(new Date("8/14/2008"), "Got the new cube I ordered.."),
+                     new Blog(new Date("8/19/2008"), "Solved the new cube but of cours...", "cube777.png"),
+                     new Blog(new Date("08/16/2008"), "Managed to get a headache toiling...","cubeapart.png"),
+                     new Blog(new Date("08/21/2008"), "Found a 7x7x7 cube for sale online...") ];
+                  
+        // 초기설정
+        window.onload = function() {
+            // 블로그 아이템 시간순 정렬
+            blog.sort(function(a, b) { return b.date - a.date; })
+
+            // showall 클릭 이벤트 콜백 함수
+            document.getElementById("showall").onclick = function () {
+                document.getElementById("search").style.display = "inline";
+                document.getElementById("searchbtn").style.display = "inline";
+                showBlog();
+                document.getElementById("search").onfocus;
+            }
+
+            // showrandom 클릭 이벤트 콜백 함수
+            document.getElementById("showrandom").onclick = function() {
+                var i = Math.floor(Math.random() * blog.length);
+                alert(blog[i]);
+            }
+            
+            // search 버튼 이벤트 콜백 함수
+            document.getElementById("searchbtn").onclick = searchBlog;
+
+            // text input 이벤트 콜백 함수
+            document.getElementById("search").onfocus = function() {
+                document.getElementById("helpMsg").innerHTML = "";
+            }            
+            document.getElementById("search").onkeydown = function(e) {
+                if(e.keyCode == 13) { // 엔터키
+                    searchBlog(); // 블로그 검색
+                } else {
+                    document.getElementById("helpMsg").innerHTML = "";
+                }
+            }
+        }          
+        
+        // 블로그 검색   
+        function searchBlog() {
+            var keyword = document.getElementById("search").value;
+            if (keyword.length == 0) return;
+
+            // 검색 시작
+            for (var i = 0; i < blog.length; i++) {
+                // 검색어(keyword)를 찾은 경우
+                if (blog[i].body.toLowerCase().indexOf(keyword.toLowerCase()) != -1) {
+                    alert(blog[i]);
+                    break;
+                }
+            }
+            
+            // 검색실패시 아래 메세지 보여줌
+            if (i == blog.length) {
+                document.getElementById("helpMsg").innerHTML = 
+                    "Sorry, there are no blog entries.";
+            }
+        }
+        
+        // 블로그 항목 리스트를 보여준다.
+        function showBlog() {
+            var blogHTML = "";
+            for (var i = 0; i < blog.length; i++) 
+                blogHTML += blog[i].toHTML(i % 2);
+            document.getElementById("blog").innerHTML = blogHTML;
+        }
+    </script>
+    <style type="text/css">
+        #search, #searchbtn {
+            display: none; 
+        }
+        #helpMsg {
+            color: blue;
+            font-style: italic;
+            size: 70%;
+        }
+    </style>
+</head>
+<body>
+    <h3>YouCube - The Blog for Cube Puzzlers</h3>
+    <img src="cube.png" alt="YouCube" />
+    <input id="search" type="text" />
+    <input id="searchbtn" type="button" value="Search the Blog" />
+    <span id="helpMsg"></span>
+    <div id="blog"></div>
+    <input id="showall" type="button" value="Show All Blog Entries" />
+    <input id="showrandom" type="button" value="View a Random Blog Entry" />
+</body>
+</html>
