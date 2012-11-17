@@ -1,6 +1,9 @@
+document.write("<script type='text/javascript' src='date.js'></script>");
+
 /*********************************************
 Blog Class
 *********************************************/
+
 function Blog(date, body, img) {
     // property
     this.date = date;
@@ -24,11 +27,6 @@ function Blog(date, body, img) {
         html += this.body + "<br /><em>" + this.signiture + "</em></p>";
         return html;
     }
-}
-
-// toString Override
-Date.prototype.toString = function() {
-    return this.getDate() + "/" + (this.getMonth() + 1) + "/" + this.getFullYear();
 }
 
 /*********************************************
@@ -87,6 +85,19 @@ function getText(elem) {
     return text;
 }
  
+ // 블로그 항목 리스트를 보여준다.
+function showBlog(num) {
+    var blogHTML = "";
+    
+    // showallblog일 경우
+    if (!num) num = blog.length;
+    
+    for (var i = 0; i < blog.length && i < num; i++) 
+        blogHTML += blog[i].toHTML(i % 2);
+        
+    document.getElementById("blog").innerHTML = blogHTML;
+}
+
 // 초기설정
 window.onload = function() {
     // showall 클릭 이벤트 콜백 함수
@@ -138,17 +149,4 @@ function searchBlog() {
         document.getElementById("helpMsg").innerHTML = 
             "Sorry, there are no blog entries.";
     }
-}
-
-// 블로그 항목 리스트를 보여준다.
-function showBlog(num) {
-    var blogHTML = "";
-    
-    // showallblog일 경우
-    if (!num) num = blog.length;
-    
-    for (var i = 0; i < blog.length && i < num; i++) 
-        blogHTML += blog[i].toHTML(i % 2);
-        
-    document.getElementById("blog").innerHTML = blogHTML;
 }

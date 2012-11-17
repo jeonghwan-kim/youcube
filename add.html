@@ -1,0 +1,51 @@
+<html>
+  <head>
+    <title>YouCube - Adding to the Blog for Cube Puzzlers</title>
+    <link type="text/css" href="style.css" rel="stylesheet">
+    <script type="text/javascript" src="ajax.js"> </script>
+    <script type="text/javascript" src="date.js"> </script>
+    <script type="text/javascript">
+        var ajaxReq = new AjaxRequest();
+
+        function addBlogEntry() {
+            // Add 버튼 비활성화, 상태가 바쁘다고 설정
+            document.getElementById("add").disabled = true;
+            document.getElementById("status").innerHTML = "Adding...";
+            
+            // Ajax 요청으로 새로운 블로그 항목 전송
+            ajaxReq.send("post", "add.php", handler,
+                "application/x-www-form-urlencoded; charset=UTF-8",
+                "date=" + document.getElementById("date").value +
+                "&body=" + document.getElementById("body").value +
+                "&image=" + document.getElementById("image").value);
+        }
+        
+        function handler() {
+            if (ajaxReq.getReadyState() == 4 && ajaxReq.getStatus() == 200) {
+                // add 버튼을 활성화 하고 상태를 초기화 함
+                document.getElementById("add").disabled = false;
+                document.getElementById("status").innerHTML = "Saved";
+            }
+        }
+        
+        // handler() 실행후 status 메세지를 비움
+        function empty() {
+            document.getElementById("status").innerHTML = "";
+        }
+        
+        window.onload = function() {
+            document.getElementById("date").value = (new Date());
+            document.getElementById("body").focus();
+        }
+    </script>
+  </head>
+
+  <body>
+    <h3>YouCube - Adding to the Blog for Cube Puzzlers</h3>
+    Date: <input type="text" id="date" name="date" value="" size="10" onfocus="empty();" /><br />
+    Body: <input type="text" id="body" name="body" value="" size="60" onfocus="empty();" /><br />
+    Image (optional): <input type="text" id="image" name="image" value="" size="20" onfocus="empty();" /><br />
+    <input type="button" id="add" value="Add the New Blog Entry" onclick="addBlogEntry();" /><br />
+    <div id="status"></div>
+  </body>
+</html>
